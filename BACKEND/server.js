@@ -7,11 +7,16 @@ import LinkRoutes from "./routes/LinkRoutes.js";
 import FeedbackRoutes from "./routes/FeedbackRoutes.js";
 import Report from "./routes/Report.js";
 
-
 config();
 connect();
 const app = express();
-app.use(cors());
+app.use(
+  cors({
+    origin:[ "http://localhost:5173"  , process.env.FRONTEND_URL], // 👈 यहां अपने frontend का URL डालो
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 app.use(express.json());
 const PORT = process.env.PORT;
 
