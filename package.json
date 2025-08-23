@@ -4,8 +4,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "frontend": "cd frontend && npm run dev",
-    "backend": "cd backend && nodemon index.js",
+    "frontend": "cd FRONTEND && npm run dev",
+    "backend": "cd BACKEND && nodemon index.js",
     "dev": "concurrently \"npm run frontend\" \"npm run backend\""
   },
   "keywords": [],
