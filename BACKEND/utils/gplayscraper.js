@@ -1,5 +1,4 @@
 import gplay from "google-play-scraper";
-import AppReport from "../models/AppReport.js"; // adjust path
 import { sendApkStatus } from "../socket.js";
 
 export async function analyzeApp(packageId, clientId) {
@@ -13,14 +12,14 @@ export async function analyzeApp(packageId, clientId) {
     const reviews = await gplay.reviews({
       appId: packageId,
       sort: gplay.sort.NEWEST,
-      num: 5000,
+      num: 500, // practical limit
     });
 
     // Reviews filters
     sendApkStatus(clientId, "Analysing the Reviews");
     const reviewMoreThan3 = reviews.data.filter((r) => r.score >= 3);
 
-    // Detect reviews with suspicious keywords
+    // Detect suspicious reviews
     const suspiciousKeywords =
       /\b(fraud|scam|spam|fake|hack|malware|virus|cheat)\b/i;
     const suspiciousReviews = reviews.data.filter((r) =>
@@ -31,9 +30,8 @@ export async function analyzeApp(packageId, clientId) {
     sendApkStatus(clientId, "Getting the Permissions");
     const permissions = await gplay.permissions({ appId: packageId });
 
-    // Detect suspicious permissions
+    // Suspicious permissions
     sendApkStatus(clientId, "Detecting Suspicious Permissions");
-
     const suspiciousPermPatterns =
       /sms|call|contacts|camera|microphone|location|storage|record_audio/i;
     const suspiciousPermissions = permissions.filter((p) =>
@@ -42,11 +40,10 @@ export async function analyzeApp(packageId, clientId) {
 
     // 🔹 Data safety
     sendApkStatus(clientId, "Getting Data Safety");
-
     const datasafety = await gplay.datasafety({ appId: packageId });
 
-    // 🔹 Map to DB schema
-    const report = {
+    // 🔹 Final PlayStore report (DB में save मत कर!)
+    return {
       appId: app.appId,
       appName: app.title,
       androidVersion: app.androidVersion,
@@ -55,13 +52,9 @@ export async function analyzeApp(packageId, clientId) {
       // Developer Info
       developer: app.developer,
       developerId: app.developerId,
-      developerInternalID: app.developerId,
-      developerEmail: app.developerEmail,
-      developerWebsite: app.developerWebsite,
-      developerLegalName: app.developerLegalName,
-      developerLegalAddress: app.developerAddress,
-      developerLegalEmail: app.developerEmail,
-      developerLegalPhoneNumber: app?.developerLegalPhoneNumber || null,
+      developerEmail: app.developerEmail || null,
+      developerWebsite: app.developerWebsite || null,
+      developerAddress: app.developerAddress || null,
 
       // Store Info
       icon: app.icon,
@@ -73,7 +66,7 @@ export async function analyzeApp(packageId, clientId) {
       privacyPolicyUrl: app.privacyPolicy,
 
       // Data Safety
-      datasafety: datasafety,
+      datasafety,
 
       // Reviews
       reviewsSearched: reviews.data.length,
@@ -87,30 +80,14 @@ export async function analyzeApp(packageId, clientId) {
 
       // Permissions
       totalPermissions: permissions.length,
-      permissions: permissions, // full list
+      permissions,
       suspiciousPermissions: suspiciousPermissions.map((p) => ({
         permission: p.permission,
         type: p.type || "Unknown",
       })),
-
-      // Security / Verification placeholders
-      sha256: null,
-      certificates: [],
-      verified: null,
-      sandboxResult: {},
-
-      // ML Risk Analysis placeholders
-      riskScore: null,
-      riskLevel: "LOW",
-      riskSummary: null,
     };
-
-    // 🔹 Save directly in DB
-    const savedReport = await AppReport.create(report);
-
-    return savedReport;
   } catch (err) {
     console.error("❌ analyzeApp error:", err.message);
-    throw new Error("Failed to analyze app: " + err.message);
+    return null;
   }
 }

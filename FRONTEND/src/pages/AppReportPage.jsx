@@ -2,11 +2,19 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { getReport } from "../services/operations/reportService.js";
 import AppReport from "../components/AppReport.jsx";
+import FeedbackInput from "../components/FeedbackInput.jsx";
+
 const AppReportPage = () => {
+  const [feedbackModal, setFeedbackModal] = useState(false);
+
+  const onClose = () => setFeedbackModal(false);
+
   const [loading, setLoading] = useState(true);
   const [report, setReport] = useState(null);
   const params = useParams();
   const [reportId, setReportId] = useState(params.id || null);
+
+  const onOpen = () => setFeedbackModal(true);
 
   useEffect(() => {
     const get = async (reportId) => {
@@ -35,8 +43,12 @@ const AppReportPage = () => {
   }
 
   return (
-    <div className="bg-gray-900 p-4 " >
-      <AppReport report={report} />
+    <div className="bg-gray-900 p-4  min-h-screen">
+      {feedbackModal ? (
+        <FeedbackInput onClose={onClose} />
+      ) : (
+        <AppReport onOpen={onOpen} report={report} />
+      )}
     </div>
   );
 };

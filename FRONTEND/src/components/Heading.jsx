@@ -1,5 +1,6 @@
-import React from 'react'
-import Input from "./Input.jsx"
+import React from "react";
+import ApkInput from "./ApkInput.jsx";
+import UrlInput from "./UrlInput.jsx";
 const Heading = () => {
   return (
     <div className="w-full flex flex-col gap-4 p-6 px-8  ">
@@ -22,10 +23,18 @@ const Heading = () => {
           <p className="text-xl font-semibold"> Full APK Report</p>
         </div>
       </div>
-      
-      <Input />
+
+      <ApkInput />
+
+      <div className="flex items-center text-xl  text-gray-500">
+        <hr className="flex-1 border-t border-dashed border-gray-400" />
+        <span className="px-3">OR</span>
+        <hr className="flex-1 border-t border-dashed border-gray-400" />
+      </div>
+
+      <UrlInput />
     </div>
   );
-}
+};
 
-export default Heading
+export default Heading;

@@ -19,9 +19,9 @@ const HeroSection = () => {
             </p>
           </div>
 
-          <button className="p-2 font-semibold hover:cursor-pointer hover:shadow-md  transition-all duration-500 w-40 shadow-cyan-200  shadow px-4 text-xl bg-[#0651b1] rounded-2xl ">
+          {/* <button className="p-2 font-semibold hover:cursor-pointer hover:shadow-md  transition-all duration-500 w-40 shadow-cyan-200  shadow px-4 text-xl bg-[#0651b1] rounded-2xl ">
             Check Now
-          </button>
+          </button> */}
         </div>
       </div>
 

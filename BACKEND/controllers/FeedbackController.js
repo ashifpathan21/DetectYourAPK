@@ -21,7 +21,7 @@ export const add = async (req , res) => {
             success:true,
             message:"Thanks For Your Feeback",
             feedback
-        })
+        }) 
      } catch (error) {
         return res.status(500).json({
             success:false,

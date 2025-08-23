@@ -16,4 +16,5 @@ export const feedbackURL = {
 export const reportURL = {
   GET_REPORT : BASE_URL + "report",
   GET_REPORT_PDF : BASE_URL + "report/pdf",
+  GET_ALL_REPORTS : BASE_URL + "report/all",
 }

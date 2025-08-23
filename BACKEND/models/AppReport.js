@@ -1,82 +1,53 @@
 import mongoose from "mongoose";
 
-// models/AppReport.js
-const AppReportSchema = new mongoose.Schema({
-  appId: { type: String, required: true }, // package name
-  appName: { type: String },
-  androidVersion: { type: String },
+const appReportSchema = new mongoose.Schema(
+  {
+    appId: { type: String, required: true, unique: true },
 
-  categories: [{}],
+    apkMeta: {
+      apk_name: String,
+      sha256: String,
+      size_bytes: Number,
+      package_name: String,
+      version_name: String,
+      version_code: String,
+    },
 
-  // Developer Info
-  developer: { type: String },
-  developerId: { type: String },
-  developerInternalID: { type: String },
-  developerEmail: { type: String },
-  developerWebsite: { type: String },
-  developerLegalName: { type: String },
-  developerLegalAddress: { type: String },
-  developerLegalEmail: { type: String },
-  developerLegalPhoneNumber: { type: String },
+    permissions: {
+      all: [String],
+      dangerous: [String],
+    },
 
-  // Store / Play Store Info
-  icon: { type: String },
-  url: { type: String },
-  installs: { type: String },
-  totalReviews: { type: Number },
-  released: { type: Date },
-  score: { type: Number }, // average rating
-  privacyPolicyUrl: { type: String },
+    certificates: [
+      {
+        subject: String,
+        issuer: String,
+        serial_number: String,
+        not_before: String,
+        not_after: String,
+        signature_algorithm: String,
+        error: String, // अगर cert parse fail हो
+      },
+    ],
 
-  // Data Safety Section
-  datasafety: {
-    type: Object,
+    verdict: { type: String, default: "Unknown" },
+
+    confidence: {
+      safe: { type: Number, default: 0 },
+      fake: { type: Number, default: 0 },
+    },
+
+    risk_score: { type: Number, default: 0 },
+
+    playstore: mongoose.Schema.Types.Mixed, // जो भी analyzeApp से आएगा
+    sandboxResult: mongoose.Schema.Types.Mixed, // sandbox का raw JSON
+
+    userSearched: [{ type: String }], // clientIds
+
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now },
   },
+  { timestamps: true }
+);
 
-  // Reviews Analysis
-  reviewsSearched: { type: Number },
-  reviewMoreThan3: { type: Number },
-  suspiciousReviews: [
-    {
-      userName: { type: String },
-      text: { type: String },
-      score: { type: Number },
-      date: { type: Date },
-    },
-  ],
-
-  // Security / Verification
-  sha256: { type: String }, // ML or Androguard generated
-  certificates: { type: Array }, // app signing info
-  verified: { type: Boolean, default: null }, // null if no link
-  sandboxResult: { type: Object }, // dynamic analysis result
-
-  // Permissions
-  totalPermissions: { type: Number },
-  permissions: [
-    {
-      permission: { type: String },
-      type: { type: String },
-    },
-  ],
-  suspiciousPermissions: [
-    {
-      permission: { type: String },
-      type: { type: String },
-    },
-  ],
-
-  // ML Risk Analysis
-  riskScore: { type: Number, min: 0, max: 1 }, // random forest probability
-  riskLevel: {
-    type: String,
-    enum: ["LOW", "MEDIUM", "HIGH", "CRITICAL"],
-    default: "LOW",
-  },
-  riskSummary: { type: String }, // human-readable summary
-
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now },
-});
-
-export default mongoose.model("AppReport", AppReportSchema);
+export default mongoose.model("AppReport", appReportSchema);

@@ -15,7 +15,7 @@ const faqs = [
   {
     question: "What type of threats can SecureAPK detect?",
     answer:
-      "SecureAPK detects banking trojans, fake apps, malware, spyware, adware, rootkits, and suspicious permissions or obfuscation techniques commonly used by attackers.",
+      "SecureAPK goes beyond basic malware detection. It identifies banking trojans, spyware, adware, rootkits, fake and malicious apps, as well as suspicious permissions and obfuscation techniques. Our system also uses SHA-256 integrity checks, permission risk analysis, and review–rating correlation to flag potentially harmful apps. Additionally, SecureAPK runs apps in a controlled sandbox environment to analyze runtime behavior, ensuring a holistic and reliable mobile threat detection process.",
   },
 ];
 

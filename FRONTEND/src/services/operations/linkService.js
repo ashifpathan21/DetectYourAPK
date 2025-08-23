@@ -4,10 +4,9 @@ import { setUserHistory } from "../../Slices/pagesSlice.js";
 const { ANALYZE } = linkURL;
 
 export const analyse = async (apkLink, clientId, userSearches) => {
-
+   console.log(apkLink)
   try {
-    const res = await apiConnector("POST", ANALYZE, apkLink, {
-      "Content-Type": "multipart/form-data",
+    const res = await apiConnector("POST", ANALYZE, {apkUrl:apkLink }, {
       Authorization: `Bearer ${clientId}`,
     });
     console.log("Upload success:", res.data);
@@ -15,7 +14,7 @@ export const analyse = async (apkLink, clientId, userSearches) => {
     setUserHistory(payload);
     console.log("User Searches ==> ", userSearches);
     localStorage.setItem("UserSearches", userSearches);
-    return res.data;
+    return res.data.report;
   } catch (err) {
     console.error("Upload failed:", err);
   }
