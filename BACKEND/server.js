@@ -26,5 +26,15 @@ app.use("/link" , LinkRoutes );
 app.use("/feedback", FeedbackRoutes);
 app.use("/report", Report);
 
+// Add this to your Express app
+app.get('/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'OK', 
+    message: 'Server is running',
+    timestamp: new Date().toISOString()
+  });
+});
+
 
 export default app ;
+
