@@ -147,10 +147,10 @@ const analyzeBankingApp = async (playstoreData) => {
     let verdict = "Safe Banking App";
     let confidence = { safe: 90 / 100, fake: 10 / 100 };
 
-    if (riskScore > 60) {
+    if (riskScore > 60/100) {
       verdict = "Likely Fake Banking App";
       confidence = { safe: 10 / 100, fake: 90 / 100 };
-    } else if (riskScore > 30) {
+    } else if (riskScore > 30/100) {
       verdict = "Suspicious - Needs Review";
       confidence = { safe: 50 / 100, fake: 50 / 100 };
     }
