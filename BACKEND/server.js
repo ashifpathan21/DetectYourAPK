@@ -12,8 +12,13 @@ connect();
 const app = express();
 app.use(
   cors({
-    origin: ["http://localhost:5173/", process.env.FRONTEND_URL], 
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    origin: [
+      "http://localhost:5173", // Remove the trailing slash
+      "https://secureapk.onrender.com", // Add your frontend Render URL if deployed
+      process.env.FRONTEND_URL
+    ].filter(Boolean), // Remove any empty values
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
     credentials: true,
   })
 );
@@ -53,5 +58,6 @@ app.use((error, req, res, next) => {
 
 
 export default app ;
+
 
 
