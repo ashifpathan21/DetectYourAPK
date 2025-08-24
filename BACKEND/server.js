@@ -35,6 +35,23 @@ app.get('/health', (req, res) => {
   });
 });
 
+// Add this error handling middleware
+app.use((error, req, res, next) => {
+  console.error('Error details:', {
+    message: error.message,
+    stack: error.stack,
+    url: req.url,
+    method: req.method,
+    timestamp: new Date().toISOString()
+  });
+  
+  res.status(500).json({ 
+    error: 'Internal Server Error',
+    message: 'Something went wrong. Please try again later.'
+  });
+});
+
 
 export default app ;
+
 
