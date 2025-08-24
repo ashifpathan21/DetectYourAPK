@@ -1,9 +1,14 @@
 import { spawn } from "child_process";
 import path from "path";
 import fs from "fs";
+import { fileURLToPath } from "url";
+
+// Get __dirname equivalent for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const PYTHON_BIN = process.env.PYTHON_BIN || "python"; // or "python3"
-const SCRIPT_PATH = path.resolve("python/apk_checker.py");
+const SCRIPT_PATH = path.resolve(__dirname, "..", "python", "apk_checker.py");
 
 export function runApkML(apkPath) {
   return new Promise((resolve, reject) => {
