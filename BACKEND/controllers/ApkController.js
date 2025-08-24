@@ -9,7 +9,7 @@ import { runApkML } from "../utils/pythonRunner.js";
 
 export const analyse = async (req, res) => {
   try {
-    // console.log("Analyzing ....");
+     console.log("Analyzing ....");
 
     // 1. Validate file
     if (!req.file) {
@@ -23,6 +23,7 @@ export const analyse = async (req, res) => {
       req?.headers?.authorization?.split(" ")[1];
 
     // 3. Parse APK
+  
     sendApkStatus(clientId, "Parsing the APK");
     const apkPath = path.resolve(req.file.path);
     const parser = new AppInfoParser(apkPath);

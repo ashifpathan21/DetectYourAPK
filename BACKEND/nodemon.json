@@ -1,0 +1,4 @@
+{
+  "ignore": ["uploads/**", "temp_uploads/**"],
+  "ext": "js,json"
+}
