@@ -10,6 +10,6 @@ const server = http.createServer(app); // Create server from express app ✅
 
 initializeSocket(server); // Initialize socket on the same server ✅
 
-server.listen(PORT, () => {
-  console.log(`server is running on port ${PORT}`);
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server is running on port ${PORT}`);
 });
