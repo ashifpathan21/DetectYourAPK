@@ -87,7 +87,7 @@ export async function analyzeApp(packageId, clientId) {
       })),
     };
   } catch (err) {
-    console.error("❌ analyzeApp error:", err.message);
+    // console.error("❌ analyzeApp error:", err.message);
     return null;
   }
 }

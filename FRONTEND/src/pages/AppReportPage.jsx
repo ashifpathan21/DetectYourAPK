@@ -19,15 +19,15 @@ const AppReportPage = () => {
   useEffect(() => {
     const get = async (reportId) => {
       try {
-        console.log("working on getting report");
+        // console.log("working on getting report");
         const res = await getReport(reportId);
         setReport(res);
         setLoading(false);
       } catch (error) {
-        console.log(error);
+        // console.log(error);
       }
     };
-    console.log(reportId);
+    // console.log(reportId);
     if (reportId) {
       get(reportId);
     }

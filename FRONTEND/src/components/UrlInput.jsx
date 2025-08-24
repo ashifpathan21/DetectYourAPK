@@ -44,7 +44,7 @@ const UrlInput = () => {
       navigate(`/report/${response._id}`);
       toast.success("Analysis Successful!");
     } catch (error) {
-      console.error(error);
+      // console.error(error);
       toast.error("Something went wrong while analyzing link!");
     }
 

@@ -11,11 +11,11 @@ const socket = io(import.meta.env.VITE_BASE_URL, {
 const SocketProvider = ({ children }) => {
   useEffect(() => {
     socket.on("connect", () => {
-      console.log("✅ Socket connected (test)");
+      // console.log("✅ Socket connected (test)");
     });
 
     socket.on("disconnect", () => {
-      console.log("❌ Socket disconnected (test)");
+      // console.log("❌ Socket disconnected (test)");
     });
 
     return () => {

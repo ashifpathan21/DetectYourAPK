@@ -27,9 +27,9 @@ export function runApkML(apkPath) {
         err += msg;
         // Filter noisy androguard DEBUG lines — don't mark them as errors
         if (/error/i.test(msg)) {
-          console.error("❌ Python Error:", msg);
+          // console.error("❌ Python Error:", msg);
         } else {
-          // optional: console.log("🐍 Python Log:", msg.trim());
+          // optional: // console.log("🐍 Python Log:", msg.trim());
         }
       });
 

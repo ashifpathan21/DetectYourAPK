@@ -13,7 +13,7 @@ const Reports = () => {
       try {
         const res = await getAllReports();
         setReports(res || []); // fallback
-        console.log(res);
+        // console.log(res);
       } catch (error) {
         toast.error("Something went wrong");
       }

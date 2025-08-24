@@ -9,7 +9,7 @@ import { runApkML } from "../utils/pythonRunner.js";
 
 export const analyse = async (req, res) => {
   try {
-    console.log("Analyzing ....");
+    // console.log("Analyzing ....");
 
     // 1. Validate file
     if (!req.file) {
@@ -27,7 +27,7 @@ export const analyse = async (req, res) => {
     const apkPath = path.resolve(req.file.path);
     const parser = new AppInfoParser(apkPath);
     const apk = await parser.parse();
-    console.log(apk , apk?.icon)
+    // console.log(apk , apk?.icon)
     const packageId = apk?.package;
 
     if (!packageId) {
@@ -100,7 +100,7 @@ export const analyse = async (req, res) => {
       report,
     });
   } catch (error) {
-    console.error("❌ analyse error:", error);
+    // console.error("❌ analyse error:", error);
     res
       .status(500)
       .json({ error: "Failed to analyse APK", details: error.message });

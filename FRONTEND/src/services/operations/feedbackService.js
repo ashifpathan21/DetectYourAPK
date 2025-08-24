@@ -1,7 +1,7 @@
 // services/feedbackService.js
 import { feedbackURL } from "../apis"; // your feedback URLs
 import { apiConnector } from "../apiConnector";
-const {ADD, GET} = feedbackURL
+const { ADD, GET } = feedbackURL;
 /**
  * Add feedback to backend
  * @param {number} rating - Rating (1-5)
@@ -11,11 +11,11 @@ const {ADD, GET} = feedbackURL
 export const addFeedback = async (rating, text) => {
   try {
     const response = await apiConnector("POST", ADD, { rating, text });
-    console.log(response)
-    
+    // console.log(response)
+
     return response.data; // { success, message, feedback }
   } catch (error) {
-    console.error("Error adding feedback:", error);
+    // console.error("Error adding feedback:", error);
     return { success: false, message: "Internal Server Error" };
   }
 };
@@ -29,7 +29,7 @@ export const getFeedbacks = async () => {
     const response = await apiConnector("GET", GET);
     return response.data.feedbacks || [];
   } catch (error) {
-    console.error("Error fetching feedbacks:", error);
+    // console.error("Error fetching feedbacks:", error);
     return [];
   }
 };

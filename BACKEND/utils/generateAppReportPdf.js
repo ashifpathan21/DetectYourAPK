@@ -438,7 +438,7 @@ export async function generateAppReportPdf(report, res) {
     // Send the PDF
     res.send(pdfBuffer);
   } catch (err) {
-    console.error("PDF Generation Error:", err.message);
+    // console.error("PDF Generation Error:", err.message);
     res
       .status(500)
       .json({ error: "Failed to generate PDF", details: err.message });

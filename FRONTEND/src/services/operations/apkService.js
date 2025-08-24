@@ -7,23 +7,18 @@ export const analyse = async (apk, clientId, userSearches) => {
   const formData = new FormData();
   formData.append("apk", apk);
   try {
-    const res = await apiConnector(
-      "POST",
-      ANALYZE,
-       formData,
-      {
-        "Content-Type": "multipart/form-data",
-        "Authorization":`Bearer ${clientId}` ,
-      }
-    );
-    console.log("Upload success:", res.data);
+    const res = await apiConnector("POST", ANALYZE, formData, {
+      "Content-Type": "multipart/form-data",
+      Authorization: `Bearer ${clientId}`,
+    });
+    // console.log("Upload success:", res.data);
     const payload = res.data;
     setUserHistory(payload);
-    console.log("User Searches ==> ", userSearches);
+    // console.log("User Searches ==> ", userSearches);
     localStorage.setItem("UserSearches", userSearches);
     return res.data.report;
   } catch (err) {
-    console.error("Upload failed:", err);
+    // console.error("Upload failed:", err);
   }
 };
 

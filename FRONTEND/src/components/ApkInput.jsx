@@ -46,7 +46,7 @@ const ApkInput = () => {
       navigate(`/report/${responce._id}`);
       toast.success("Success");
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       toast.error("Something Went Wrong");
     }
     setStatusInfo("");
@@ -94,7 +94,7 @@ const ApkInput = () => {
         <>
           <input
             type="file"
-            accept={[".apk" ,".apkm" , ".xapk"]}
+            accept={[".apk", ".apkm", ".xapk"]}
             id="fileUpload"
             onChange={handleChange}
             className="hidden"

@@ -3,8 +3,7 @@ import AppReport from "../models/AppReport.js";
 
 export const analyse = async (req, res) => {
   try {
-    
-    console.log("Analyzing from Play Store link / packageId ....");
+    // console.log("Analyzing from Play Store link / packageId ....");
 
     const { apkUrl } = req.body;
     if (!apkUrl) {
@@ -32,9 +31,9 @@ export const analyse = async (req, res) => {
       }
     }
 
-    console.log("📦 Package ID to analyze:", packageId);
+    // console.log("📦 Package ID to analyze:", packageId);
 
-    // 1. Check if report exists 
+    // 1. Check if report exists
     let existReport = await AppReport.findOne({ appId: packageId });
     if (existReport) {
       existReport = await AppReport.findByIdAndUpdate(
@@ -54,17 +53,16 @@ export const analyse = async (req, res) => {
       return res.status(500).json({ error: "Failed to analyze app" });
     }
 
-   
     // 3. Save into DB (first insert)
     let newReport = await AppReport.create({
-      appId:playstoreReport?.appId ,
-      playstore:playstoreReport,
+      appId: playstoreReport?.appId,
+      playstore: playstoreReport,
       userSearched: clientId ? [clientId] : [],
       createdAt: new Date(),
       updatedAt: new Date(),
     });
 
-    await analyzeBankingApp(playstoreReport)
+    await analyzeBankingApp(playstoreReport);
 
     // 4. Return response
     res.json({
@@ -72,7 +70,7 @@ export const analyse = async (req, res) => {
       report: newReport,
     });
   } catch (error) {
-    console.error("❌ analyse error:", error);
+    // console.error("❌ analyse error:", error);
     res
       .status(500)
       .json({ error: "Failed to analyse APK", details: error.message });
@@ -147,14 +145,14 @@ const analyzeBankingApp = async (playstoreData) => {
 
     // Verdict & confidence
     let verdict = "Safe Banking App";
-    let confidence = { safe: 90/100, fake: 10/100 };
+    let confidence = { safe: 90 / 100, fake: 10 / 100 };
 
     if (riskScore > 60) {
       verdict = "Likely Fake Banking App";
-      confidence = { safe: 10/100, fake: 90/100 };
+      confidence = { safe: 10 / 100, fake: 90 / 100 };
     } else if (riskScore > 30) {
       verdict = "Suspicious - Needs Review";
-      confidence = { safe: 50/100, fake: 50/100 };
+      confidence = { safe: 50 / 100, fake: 50 / 100 };
     }
 
     // ---------- SAVE/UPDATE in DB ----------
@@ -185,7 +183,7 @@ const analyzeBankingApp = async (playstoreData) => {
       reasons,
     };
   } catch (error) {
-    console.error("❌ AI Analysis error:", error);
+    // console.error("❌ AI Analysis error:", error);
     return { error: "Analysis failed" };
   }
 };

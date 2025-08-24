@@ -5,7 +5,7 @@ import SandboxSection from "./SandboxSection.jsx";
 import { downloadReport } from "../services/operations/reportService.js";
 
 const AppReport = ({ report, onOpen }) => {
-  console.log(report)
+  // console.log(report)
   const navigate = useNavigate();
   const chartInstance = useRef(null);
   const [generatedAt] = useState(new Date().toLocaleString());
