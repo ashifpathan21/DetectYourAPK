@@ -8,6 +8,7 @@ const router = express.Router();
 // all reports
 router.get("/all", async (req, res) => {
   try {
+    
     const reports = await AppReport.find().lean(); // 👈 lean()
     return res.status(200).json({ reports });
   } catch (error) {
