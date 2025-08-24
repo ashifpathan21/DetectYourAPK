@@ -21,8 +21,7 @@ export const getAllReports = async () => {
     toast.dismiss(toastId);
     return response.data.reports;
   } catch (error) {
-    console.log(error)
-    toast.dismiss(toastId);
+        toast.dismiss(toastId);
     toast.error("something went wrong");
   }
 };
