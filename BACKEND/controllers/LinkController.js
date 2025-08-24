@@ -141,7 +141,7 @@ const analyzeBankingApp = async (playstoreData) => {
     }
 
     // Normalize risk score
-    if (riskScore > 100) riskScore = 100;
+    if (riskScore > 100) riskScore = 100/100;
 
     // Verdict & confidence
     let verdict = "Safe Banking App";
