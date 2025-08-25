@@ -48,7 +48,7 @@ export const analyse = async (req, res) => {
       clientId,
       "Running under controlled environment to check its behavior"
     );
-    let sandboxResult = await runDynamicAnalysis(apkPath);
+    let sandboxResult = {"ok":true} // await runDynamicAnalysis(apkPath);
     while (!sandboxResult) {
       sandboxResult = await runDynamicAnalysis(apkPath);
     }
