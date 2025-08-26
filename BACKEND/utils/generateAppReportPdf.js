@@ -2,6 +2,7 @@
 import puppeteer from "puppeteer";
 
 export async function generateAppReportPdf(report, res) {
+  console.log(report)
   try {
     // Extract data for easier access
     const ps = report.playstore || {};
