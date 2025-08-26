@@ -56,7 +56,7 @@ export async function generateAppReportPdf(report, res) {
       .font("Helvetica-Bold")
       .fontSize(20)
       .fillColor("#1a73e8")
-      .text("📱 App Security Analysis Report", { align: "center" })
+      .text(" App Security Analysis Report", { align: "center" })
       .moveDown(0.5);
 
     // Draw a line under the title
@@ -79,7 +79,7 @@ export async function generateAppReportPdf(report, res) {
       .font("Helvetica-Bold")
       .fontSize(12)
       .fillColor("black")
-      .text("📌 App Information", doc.page.margins.left, startY);
+      .text(" App Information", doc.page.margins.left, startY);
 
     doc
       .font("Helvetica")
@@ -127,7 +127,7 @@ export async function generateAppReportPdf(report, res) {
       .font("Helvetica-Bold")
       .fontSize(12)
       .text(
-        "🚨 Risk Assessment",
+        "Risk Assessment",
         doc.page.margins.left + col1Width + 20,
         startY
       );
@@ -218,7 +218,7 @@ export async function generateAppReportPdf(report, res) {
       .font("Helvetica-Bold")
       .fontSize(14)
       .fillColor("#444")
-      .text("🔐 Certificate Information", doc.page.margins.left, doc.y + 15)
+      .text("Certificate Information", doc.page.margins.left, doc.y + 15)
       .moveDown(0.5);
 
     // Draw a line under the section title
@@ -264,7 +264,7 @@ export async function generateAppReportPdf(report, res) {
       .font("Helvetica-Bold")
       .fontSize(14)
       .fillColor("#444")
-      .text("🔑 Permissions Analysis", doc.page.margins.left, doc.y)
+      .text("Permissions Analysis", doc.page.margins.left, doc.y)
       .moveDown(0.5);
 
     // Draw a line under the section title
@@ -338,7 +338,7 @@ export async function generateAppReportPdf(report, res) {
       .font("Helvetica-Bold")
       .fontSize(14)
       .fillColor("#444")
-      .text("📊 Data Safety", doc.page.margins.left, doc.y)
+      .text("Data Safety", doc.page.margins.left, doc.y)
       .moveDown(0.5);
 
     // Draw a line under the section title
