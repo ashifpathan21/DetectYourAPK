@@ -16,7 +16,7 @@ const Heading = () => {
         </div>
         <div className="flex items-center gap-2">
           <i className="rounded-full bg-cyan-400 aspect-square  p-2 ri-thunderstorms-fill font-semibold text-3xl"></i>{" "}
-          <p className="text-xl font-semibold"> 30 Second Analysis</p>
+          <p className="text-xl font-semibold"> Fast Analysis</p>
         </div>
         <div className="flex items-center gap-2">
           <i className="rounded-full bg-cyan-400 aspect-square p-2 ri-file-chart-fill font-semibold text-3xl"></i>{" "}

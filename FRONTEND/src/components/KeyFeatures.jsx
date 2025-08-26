@@ -1,11 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay } from "swiper/modules";
+import "swiper/css";
 import KeyFeature1 from "../assets/keyFeature1.jpg";
 import KeyFeature2 from "../assets/keyFeature2.jpg";
 import KeyFeature3 from "../assets/keyFeature3.jpg";
 import KeyFeature4 from "../assets/keyFeature4.jpg";
 
 const KeyFeatures = () => {
-  const [index, setIndex] = useState(0);
+  
   const data = [
     {
       heading: " Instant Detection",
@@ -77,27 +80,27 @@ const KeyFeatures = () => {
             className="object-cover hover:shadow-lg rounded-4xl shadow-md  transition-all duration-500 shadow-cyan-700  h-40 w-90  "
           />
         </div>
-        {
-          <div className="flex flex-col max-w-1/2  p-2 gap-1 ">
-            <div>
-              <h2 className="text-4xl font-semibold  font-serif ">
-                {data[index].heading}
-              </h2>
-              <button
-                onClick={() => {
-                  let nextIndex = (index + 1) % data.length;
-                  setIndex(nextIndex);
-                }}
-                className="text-teal-500 p-2 bg-cyan-900 flex justify-center items-center rounded-full aspect-square px-4 text-center  font-semibold text-5xl"
-              >
-                {">"}
-              </button>
-            </div>
-            <h2 className="p-2 text-2xl text-cyan-600 font-semibold  font-serif ">
-              {data[index].para}
-            </h2>
-          </div>
-        }
+        <Swiper
+          modules={[Autoplay]}
+          autoplay={{ delay: 1000, reverseDirection: false }}
+          loop={true}
+          className="w-full"
+        >
+          {data.map((data, index) => (
+            <SwiperSlide key={index}>
+              <div className="flex flex-col w-full  md:max-w-1/2  lg:max-w-1/2 p-1 gap-1 ">
+                <div>
+                  <h2 className="text-4xl font-semibold  font-serif ">
+                    {data.heading}
+                  </h2>
+                </div>
+                <h2 className="p-2 text-2xl text-cyan-600 font-semibold  font-serif ">
+                  {data.para}
+                </h2>
+              </div>
+            </SwiperSlide>
+          ))}
+        </Swiper>
       </div>
     </div>
   );
