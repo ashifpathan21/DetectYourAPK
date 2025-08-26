@@ -23,6 +23,7 @@
     "chartjs": "^0.3.24",
     "chartjs-node-canvas": "^5.0.0",
     "cors": "^2.8.5",
+    "date-fns": "^4.1.0",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
     "framer-motion": "^12.23.12",
