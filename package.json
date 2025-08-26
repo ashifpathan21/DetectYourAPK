@@ -15,6 +15,7 @@
   "description": "",
   "dependencies": {
     "@reduxjs/toolkit": "^2.8.2",
+    "@sparticuz/chromium": "^138.0.2",
     "app-info-parser": "^1.1.6",
     "axios": "^1.11.0",
     "canvas": "^3.2.0",
@@ -33,6 +34,7 @@
     "pdfkit": "^0.17.1",
     "pdfkit-table": "^0.1.99",
     "puppeteer": "^24.16.2",
+    "puppeteer-core": "^24.17.0",
     "python-shell": "^5.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
