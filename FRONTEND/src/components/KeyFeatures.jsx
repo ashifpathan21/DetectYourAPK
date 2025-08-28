@@ -20,7 +20,7 @@ const KeyFeatures = () => {
     },
     {
       heading: "Comprehensive Security",
-      para: "Enjoy peace of mind with our through analysis of potential risks 95% threats detection accuracy verified by independent test",
+      para: "Enjoy peace of mind with our thorough analysis of potential risks 95% threats detection accuracy verified by independent test",
     },
     {
       heading: "Verification",
@@ -82,7 +82,7 @@ const KeyFeatures = () => {
         </div>
         <Swiper
           modules={[Autoplay]}
-          autoplay={{ delay: 1000, reverseDirection: false }}
+          autoplay={{ delay: 3000, reverseDirection: false }}
           loop={true}
           className="w-full"
         >

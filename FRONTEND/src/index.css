@@ -1,5 +1,67 @@
 @import "tailwindcss";
 
+.dark {
+  background-color: rgb(0, 0, 0);
+  color: white;
+}
+
+.light {
+  background-color: #ffffff;
+}
+
+.startup {
+  background-image: url(../src/assets/startup-bg.gif);
+  z-index: -1;
+  background-size: cover;
+}
+
+.log {
+  background-image: url(../src/assets/lgo.png);
+  background-size: contain;
+  background-position: center center;
+}
+
+.changing-text {
+  background: -webkit-linear-gradient(#4494fc, #e29191);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.bgpic {
+  -webkit-box-shadow: 0px 0px 17px 0px rgba(0, 0, 0, 0.41);
+  -moz-box-shadow: 0px 0px 17px 0px rgba(0, 0, 0, 0.41);
+  box-shadow: 0px 0px 17px 0px rgba(0, 0, 0, 0.41);
+  animation: move 1s linear 0.5s infinite alternate;
+}
+
+@keyframes move {
+  from {
+    transform: translateY(4px);
+  }
+  to: {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes pointBounce {
+  0% {
+    opacity: 0;
+    transform: scale(0.5) translateY(20px);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2) translateY(-10px);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1) translateY(-40px);
+  }
+}
+.point-popup {
+  animation: pointBounce 1.5s ease-out;
+}
+
+
 
 
 /* HTML: <div class="loader"></div> */

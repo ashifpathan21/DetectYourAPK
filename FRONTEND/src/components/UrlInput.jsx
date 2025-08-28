@@ -61,7 +61,7 @@ const UrlInput = () => {
             placeholder="Enter Play Store Link (eg.https://play.google.com/store/apps/details?id=com.example.app)"
             value={apkLink}
             onChange={(e) => setApkLink(e.target.value)}
-            className="border border-gray-400 rounded-lg px-4 py-2 w-full focus:outline-none focus:border-cyan-500"
+            className="border border-cyan-400 rounded-lg placeholder:text-slate-200 px-4 py-2 w-full focus:outline-none focus:border-cyan-500"
           />
           {apkLink && (
             <button

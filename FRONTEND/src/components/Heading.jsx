@@ -26,7 +26,7 @@ const Heading = () => {
 
       <ApkInput />
 
-      <div className="flex items-center text-xl  text-gray-500">
+      <div className="flex items-center  text-xl  text-gray-500">
         <hr className="flex-1 border-t border-dashed border-gray-400" />
         <span className="px-3">OR</span>
         <hr className="flex-1 border-t border-dashed border-gray-400" />

@@ -27,7 +27,7 @@ const Faq = () => {
   };
 
   return (
-    <section className="bg-[#0A1B2B] text-white py-12 px-6">
+    <section className=" py-12 px-6">
       <h2 className="text-3xl font-bold text-center mb-8">
         Frequently Asked <span className="text-cyan-400">Questions</span>
       </h2>
@@ -36,7 +36,7 @@ const Faq = () => {
         {faqs.map((faq, index) => (
           <div
             key={index}
-            className="bg-[#12263C] rounded-lg shadow-md p-4 cursor-pointer"
+            className="shadow-emerald-400 shadow transition-all duration-400  rounded-lg hover:shadow-md p-4 cursor-pointer"
             onClick={() => toggleFaq(index)}
           >
             <div className=" transition-all duration-300 flex justify-between items-center">
@@ -48,7 +48,9 @@ const Faq = () => {
               )}
             </div>
             {openIndex === index && (
-              <p className="transition-all duration-200 mt-3 text-gray-300">{faq.answer}</p>
+              <p className="transition-all duration-200 mt-3 text-gray-300">
+                {faq.answer}
+              </p>
             )}
           </div>
         ))}

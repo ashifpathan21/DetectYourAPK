@@ -5,14 +5,14 @@ import { useNavigate } from "react-router-dom";
 const Navbar = ({ onKeyFeatureClick, onFaqClick, onFooterClick }) => {
   const navigate = useNavigate();
   return (
-    <div className="w-screen h-20  shadow-md shadow-cyan-500 p-3 flex justify-between px-1 md:px-5 lg:px-7  items-center ">
+    <div className="w-screen h-20  bg-transparent  shadow-md shadow-cyan-500 p-3 flex justify-between px-1 md:px-5 lg:px-7  items-center ">
       <div
         onClick={() => navigate("/")}
         className="p-3  justify-center items-center"
       >
         <img
           src={logo1}
-          className="h-20 object-cover md:h-28 lg:h-28 aspect-square hover:scale-105 hover:translate-1 transition-all duration-200"
+          className="h-20 object-cover md:h-26 lg:h-26 hover:scale-105 hover:translate-1 transition-all duration-200"
         />
       </div>
 

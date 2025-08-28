@@ -1,9 +1,11 @@
 import React from "react";
+import {useNavigate} from 'react-router-dom'
 import { Mail, Phone, MapPin } from "lucide-react";
 
 const Footer = () => {
+  const navigate = useNavigate()
   return (
-    <footer className="bg-[#0A1B2B] text-white py-8">
+    <footer className=" py-8">
       <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-3 gap-8">
         {/* Left - Contact Info */}
         <div>
@@ -19,7 +21,7 @@ const Footer = () => {
             </li>
             <li className="flex items-center gap-2">
               <i className="ri-phone-line text-cyan-400" size={18} />
-              9999999999
+              +91 9302150511
             </li>
             <li className="flex items-center gap-2">
               <i className="ri-map-pin-line text-cyan-400" size={18} />
@@ -32,9 +34,9 @@ const Footer = () => {
         <div>
           <h3 className="text-xl font-bold mb-3">Quick Links</h3>
           <ul className="space-y-2 text-gray-300">
-            <li className="hover:text-cyan-400 cursor-pointer">Home</li>
-            <li className="hover:text-cyan-400 cursor-pointer">Features</li>
-            <li className="hover:text-cyan-400 cursor-pointer">FAQ</li>
+            <li onClick={() => navigate('/')} className="hover:text-cyan-400 cursor-pointer">Home</li>
+            <li onClick={() => navigate('/analyse')} className="hover:text-cyan-400 cursor-pointer">Features</li>
+            <li  className="hover:text-cyan-400 cursor-pointer">FAQ</li>
             <li className="hover:text-cyan-400 cursor-pointer">Contact</li>
           </ul>
         </div>
