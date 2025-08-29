@@ -38,31 +38,32 @@ const Navbar = ({ onKeyFeatureClick, onFaqClick, onFooterClick }) => {
 
   return (
     <div
-      className={`fixed top-0 p-3 left-0 right-0 z-50
+      className={`fixed top-0 py-3  left-0 right-0 z-50
                   bg-transparent backdrop-blur-sm
                   transition-transform duration-500 will-change-transform
-                  flex justify-around items-center h-20 w-full
+                  flex justify-between px-4 gap-10 items-center h-20 w-screen
                   ${visible ? "translate-y-0" : "-translate-y-full"}`}
     >
       <div onClick={() => navigate("/")} className="p-2 relative">
         <img
           src={logo1}
-          className="h-20 object-fit md:h-24 text-white lg:h-24 hover:scale-105 transition-all duration-200"
+          className="h-24 object-contain  text-white  hover:scale-105 transition-all duration-200"
           alt="logo"
         />
-        <h1 className='absolute top-12  left-15 text-2xl font-bold'>Secure</h1>
+        <h1 className="absolute top-12  left-15 text-2xl font-bold">Secure</h1>
       </div>
 
       {/* menu bar with tooltips */}
-      <div className="flex rounded-full moving-shadow px-8 max-w-[500px] w-full md:p-2 lg:p-2 justify-around items-center gap-2">
+      <div className="flex rounded-full moving-shadow px-3 md:px-8 lg:px-8 max-w-[500px] w-full md:p-2 lg:p-2 justify-around items-center gap-2">
         {/* Home */}
         <div
-          onClick={() =>{ navigate("/")
+          onClick={() => {
+            navigate("/");
             window.scrollTo({
-              top:0,
-              behavior:"smooth"
-            })}
-          }
+              top: 0,
+              behavior: "smooth",
+            });
+          }}
           className="relative group hidden md:flex lg:flex cursor-pointer p-2 text-lg font-semibold"
         >
           <i className="ri-home-line hover:text-cyan-500 transition-all duration-500"></i>
@@ -125,7 +126,7 @@ const Navbar = ({ onKeyFeatureClick, onFaqClick, onFooterClick }) => {
         </div>
       </div>
 
-      <div className="p-3">
+      <div className="p-3 hidden md:flex lg:flex">
         <button
           onClick={() => navigate("/analyse")}
           className="p-2 font-semibold hidden md:flex lg:flex hover:shadow-md transition-all duration-500 shadow-cyan-200 shadow px-4 text-xl rounded-2xl"
