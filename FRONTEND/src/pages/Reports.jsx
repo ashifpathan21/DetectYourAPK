@@ -25,7 +25,7 @@ const Reports = () => {
     <div className="min-h-screen w-screen ">
       <Navbar />
 
-      <div className="max-w-5xl mx-auto mt-10 p-6  rounded-xl shadow-md">
+      <div className="max-w-5xl mx-auto  p-6  mt-30 rounded-xl shadow-md">
         <h1 className="text-2xl font-bold mb-6">All Reports</h1>
 
         {reports.length === 0 ? (

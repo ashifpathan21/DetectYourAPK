@@ -1,6 +1,4 @@
-// utils/generateAppReportPdf.js
-import PDFDocument from "pdfkit";
-import { format } from "date-fns";
+import puppeteer from "puppeteer";
 
 export async function generateAppReportPdf(report, res) {
   try {
@@ -14,7 +12,7 @@ export async function generateAppReportPdf(report, res) {
     // Format dates
     const formatDate = (dateString) => {
       if (!dateString) return "N/A";
-      return format(new Date(dateString), "yyyy-MM-dd");
+      return new Date(dateString).toLocaleDateString();
     };
 
     // Format file size
@@ -24,20 +22,408 @@ export async function generateAppReportPdf(report, res) {
     };
 
     // Risk level styling
-    const getRiskLevelColor = () => {
+    const getRiskLevelClass = () => {
       const riskScore = report.risk_score || 0;
-      if (riskScore >= 0.7) return "#f8d7da"; // high
-      if (riskScore >= 0.4) return "#fff3cd"; // medium
-      return "#d4edda"; // low
+      if (riskScore >= 0.7) return "risk-high";
+      if (riskScore >= 0.4) return "risk-medium";
+      return "risk-low";
     };
 
-    const riskLevelColor = getRiskLevelColor();
+    const riskLevelClass = getRiskLevelClass();
 
-    // Create a PDF document
-    const doc = new PDFDocument({
-      margin: { top: 20, bottom: 20, left: 15, right: 15 },
-      size: "A4",
+    const html = `
+    <html>
+      <head>
+        <meta charset="UTF-8">
+        <style>
+          body { 
+            font-family: Arial, sans-serif; 
+            margin: 25px; 
+            color: #222; 
+            line-height: 1.4;
+          }
+          h1 { 
+            text-align: center; 
+            color: #1a73e8; 
+            margin-bottom: 30px;
+            border-bottom: 2px solid #1a73e8;
+            padding-bottom: 10px;
+          }
+          h2 { 
+            margin-top: 25px; 
+            color: #444; 
+            border-bottom: 1px solid #ddd; 
+            padding-bottom: 5px; 
+            font-size: 18px;
+          }
+          h3 {
+            font-size: 16px;
+            color: #555;
+            margin-top: 20px;
+            margin-bottom: 10px;
+          }
+          table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 10px; 
+            margin-bottom: 15px;
+            font-size: 12px; 
+            page-break-inside: avoid;
+          }
+          th, td { 
+            border: 1px solid #ddd; 
+            padding: 8px; 
+            text-align: left; 
+            vertical-align: top;
+          }
+          th { 
+            background: #f4f4f4; 
+            font-weight: bold;
+          }
+          .risk-low { background: #d4edda; }
+          .risk-medium { background: #fff3cd; }
+          risk-high { background: #f8d7da; }
+          .section {
+            margin-bottom: 25px;
+            page-break-inside: avoid;
+          }
+          .two-column {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+          }
+          .column {
+            flex: 1;
+          }
+          .footer { 
+            text-align: center; 
+            margin-top: 40px; 
+            font-size: 11px; 
+            color: gray; 
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+          }
+          .verdict {
+            font-weight: bold;
+            font-size: 16px;
+            padding: 8px;
+            border-radius: 4px;
+            text-align: center;
+            margin: 10px 0;
+          }
+          .suspicious {
+            background-color: #f8d7da;
+          }
+          .safe {
+            background-color: #d4edda;
+          }
+          .warning {
+            background-color: #fff3cd;
+          }
+          .break-before {
+            page-break-before: always;
+          }
+          .data-table {
+            font-size: 11px;
+          }
+          .monospace {
+            font-family: monospace;
+            font-size: 11px;
+          }
+          .text-center {
+            text-align: center;
+          }
+          .mb-20 {
+            margin-bottom: 20px;
+          }
+        </style>
+      </head>
+      <body>
+        <h1>📱 App Security Analysis Report</h1>
+        
+        <div class="section">
+          <div class="two-column">
+            <div class="column">
+              <h2>📌 App Information</h2>
+              <p><b>App Name:</b> ${ps.appName || "N/A"}</p>
+              <p><b>Package ID:</b> ${report.appId || "N/A"}</p>
+              <p><b>Developer:</b> ${ps.developer || "N/A"}</p>
+              <p><b>Category:</b> ${
+                (ps.categories || []).map((c) => c.name).join(", ") || "N/A"
+              }</p>
+              <p><b>Android Version:</b> ${ps.androidVersion || "N/A"}</p>
+              <p><b>Installs:</b> ${ps.installs || "N/A"}</p>
+              <p><b>Rating:</b> ${ps.score || "N/A"} (${
+      ps.totalReviews || 0
+    } reviews)</p>
+            </div>
+            <div class="column">
+              <h2>🚨 Risk Assessment</h2>
+              <div class="verdict ${riskLevelClass}">
+                ${report.verdict || "No verdict"}
+              </div>
+              <p><b>Risk Score:</b> ${(report.risk_score * 100 || 0).toFixed(
+                2
+              )}%</p>
+              <p><b>Safe Confidence:</b> ${(confidence.safe * 100 || 0).toFixed(
+                2
+              )}%</p>
+              <p><b>Fake Confidence:</b> ${(confidence.fake * 100 || 0).toFixed(
+                2
+              )}%</p>
+              <p><b>Report Date:</b> ${formatDate(report.createdAt)}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="section break-before">
+          <h2>📦 APK Information</h2>
+          <table>
+            <tr>
+              <th>APK Name</th>
+              <th>Package Name</th>
+              <th>Version</th>
+              <th>Size</th>
+              <th>SHA256</th>
+            </tr>
+            <tr>
+              <td>${apkMeta.apk_name || "N/A"}</td>
+              <td>${apkMeta.package_name || "N/A"}</td>
+              <td>${apkMeta.version_name || "N/A"} (${
+      apkMeta.version_code || "N/A"
+    })</td>
+              <td>${formatFileSize(apkMeta.size_bytes)}</td>
+              <td class="monospace">${apkMeta.sha256 || "N/A"}</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="section">
+          <h2>🔐 Certificate Information</h2>
+          <table>
+            <tr>
+              <th>Subject</th>
+              <th>Issuer</th>
+              <th>Serial Number</th>
+              <th>Valid From</th>
+              <th>Valid To</th>
+              <th>Algorithm</th>
+            </tr>
+            <tr>
+              <td>${cert.subject || "N/A"}</td>
+              <td>${cert.issuer || "N/A"}</td>
+              <td class="monospace">${cert.serial_number || "N/A"}</td>
+              <td>${formatDate(cert.not_before)}</td>
+              <td>${formatDate(cert.not_after)}</td>
+              <td>${cert.signature_algorithm || "N/A"}</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="section break-before">
+          <h2>🔑 Permissions Analysis</h2>
+          <p><b>Total Permissions:</b> ${
+            report.permissions?.all?.length || 0
+          }</p>
+          <p><b>Dangerous Permissions:</b> ${
+            report.permissions?.dangerous?.length || 0
+          }</p>
+          
+          <h3>Dangerous Permissions</h3>
+          <table>
+            <tr>
+              <th>Permission</th>
+            </tr>
+            ${
+              report.permissions?.dangerous
+                ?.map(
+                  (p) => `
+              <tr class="suspicious">
+                <td>${p}</td>
+              </tr>
+            `
+                )
+                .join("") || "<tr><td>No dangerous permissions found</td></tr>"
+            }
+          </table>
+          
+          <h3>Suspicious Permissions</h3>
+          <table>
+            <tr>
+              <th>Permission</th>
+              <th>Type</th>
+            </tr>
+            ${
+              ps.suspiciousPermissions
+                ?.map(
+                  (p) => `
+              <tr class="suspicious">
+                <td>${p.permission}</td>
+                <td>${p.type}</td>
+              </tr>
+            `
+                )
+                .join("") ||
+              '<tr><td colspan="2">No suspicious permissions found</td></tr>'
+            }
+          </table>
+        </div>
+
+        <div class="section break-before">
+          <h2>📊 Data Safety</h2>
+          
+          <h3>Security Practices</h3>
+          <table>
+            <tr>
+              <th>Practice</th>
+              <th>Description</th>
+            </tr>
+            ${
+              ds.securityPractices
+                ?.map(
+                  (p) => `
+              <tr>
+                <td>${p.practice}</td>
+                <td>${p.description}</td>
+              </tr>
+            `
+                )
+                .join("") ||
+              '<tr><td colspan="2">No security practices information</td></tr>'
+            }
+          </table>
+          
+          <h3>Collected Data</h3>
+          <table class="data-table">
+            <tr>
+              <th>Data Type</th>
+              <th>Purpose</th>
+              <th>Optional</th>
+            </tr>
+            ${
+              ds.collectedData
+                ?.map(
+                  (d) => `
+              <tr>
+                <td>${d.data} (${d.type})</td>
+                <td>${d.purpose}</td>
+                <td>${d.optional ? "Yes" : "No"}</td>
+              </tr>
+            `
+                )
+                .join("") ||
+              '<tr><td colspan="3">No data collection information</td></tr>'
+            }
+          </table>
+          
+          <h3>Shared Data</h3>
+          <table class="data-table">
+            <tr>
+              <th>Data Type</th>
+              <th>Purpose</th>
+              <th>Optional</th>
+            </tr>
+            ${
+              ds.sharedData
+                ?.map(
+                  (d) => `
+              <tr>
+                <td>${d.data} (${d.type})</td>
+                <td>${d.purpose}</td>
+                <td>${d.optional ? "Yes" : "No"}</td>
+              </tr>
+            `
+                )
+                .join("") ||
+              '<tr><td colspan="3">No data sharing information</td></tr>'
+            }
+          </table>
+        </div>
+
+        <div class="section break-before">
+          <h2>⭐ Reviews Analysis</h2>
+          <p><b>Total Reviews:</b> ${ps.totalReviews || 0}</p>
+          <p><b>Average Rating:</b> ${ps.score || "N/A"}</p>
+          <p><b>Reviews with >3 Stars:</b> ${ps.reviewMoreThan3 || 0}</p>
+          <p><b>Suspicious Reviews:</b> ${ps.suspiciousReviews?.length || 0}</p>
+          
+          <h3>Suspicious Reviews</h3>
+          <table>
+            <tr>
+              <th>User</th>
+              <th>Rating</th>
+              <th>Date</th>
+              <th>Review</th>
+            </tr>
+            ${
+              ps.suspiciousReviews
+                ?.map(
+                  (r) => `
+              <tr class="suspicious">
+                <td>${r.userName}</td>
+                <td>${r.score} ⭐</td>
+                <td>${formatDate(r.date)}</td>
+                <td>${r.text}</td>
+              </tr>
+            `
+                )
+                .join("") ||
+              '<tr><td colspan="4">No suspicious reviews found</td></tr>'
+            }
+          </table>
+        </div>
+
+        <div class="section break-before">
+          <h2>🔍 Sandbox Analysis</h2>
+          <table>
+            <tr>
+              <th>Result Type</th>
+              <th>Count</th>
+            </tr>
+            ${
+              report.sandboxResult
+                ? Object.entries(report.sandboxResult)
+                    .map(
+                      ([key, value]) => `
+              <tr>
+                <td>${key}</td>
+                <td>${value}</td>
+              </tr>
+            `
+                    )
+                    .join("")
+                : '<tr><td colspan="2">No sandbox results available</td></tr>'
+            }
+          </table>
+        </div>
+
+        <div class="footer">
+          <p>Generated on: ${new Date().toLocaleString()}</p>
+          <p>This report was automatically generated by App Security Scanner</p>
+        </div>
+      </body>
+    </html>`;
+
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
+
+    const page = await browser.newPage();
+    await page.setContent(html, { waitUntil: "domcontentloaded" });
+
+    const pdfBuffer = await page.pdf({
+      format: "A4",
+      printBackground: true,
+      margin: {
+        top: "20mm",
+        right: "15mm",
+        bottom: "20mm",
+        left: "15mm",
+      },
+    });
+
+    await browser.close();
 
     // Set response headers
     res.setHeader("Content-Type", "application/pdf");
@@ -48,573 +434,12 @@ export async function generateAppReportPdf(report, res) {
       }.pdf`
     );
 
-    // Pipe the PDF to the response
-    doc.pipe(res);
-
-    // Title
-    doc
-      .font("Helvetica-Bold")
-      .fontSize(20)
-      .fillColor("#1a73e8")
-      .text(" App Security Analysis Report", { align: "center" })
-      .moveDown(0.5);
-
-    // Draw a line under the title
-    doc
-      .moveTo(doc.page.margins.left, doc.y)
-      .lineTo(doc.page.width - doc.page.margins.right, doc.y)
-      .lineWidth(2)
-      .strokeColor("#1a73e8")
-      .stroke();
-
-    doc.moveDown(1);
-
-    // App Information and Risk Assessment in two columns
-    const col1Width = 250;
-    const col2Width = 250;
-    const startY = doc.y;
-
-    // App Information
-    doc
-      .font("Helvetica-Bold")
-      .fontSize(12)
-      .fillColor("black")
-      .text(" App Information", doc.page.margins.left, startY);
-
-    doc
-      .font("Helvetica")
-      .fontSize(10)
-      .text(
-        `App Name: ${ps.appName || "N/A"}`,
-        doc.page.margins.left,
-        doc.y + 5
-      )
-      .text(
-        `Package ID: ${report.appId || "N/A"}`,
-        doc.page.margins.left,
-        doc.y + 5
-      )
-      .text(
-        `Developer: ${ps.developer || "N/A"}`,
-        doc.page.margins.left,
-        doc.y + 5
-      )
-      .text(
-        `Category: ${
-          (ps.categories || []).map((c) => c.name).join(", ") || "N/A"
-        }`,
-        doc.page.margins.left,
-        doc.y + 5
-      )
-      .text(
-        `Android Version: ${ps.androidVersion || "N/A"}`,
-        doc.page.margins.left,
-        doc.y + 5
-      )
-      .text(
-        `Installs: ${ps.installs || "N/A"}`,
-        doc.page.margins.left,
-        doc.y + 5
-      )
-      .text(
-        `Rating: ${ps.score || "N/A"} (${ps.totalReviews || 0} reviews)`,
-        doc.page.margins.left,
-        doc.y + 5
-      );
-
-    // Risk Assessment
-    doc
-      .font("Helvetica-Bold")
-      .fontSize(12)
-      .text(
-        "Risk Assessment",
-        doc.page.margins.left + col1Width + 20,
-        startY
-      );
-
-    // Risk verdict box
-    doc
-      .rect(doc.page.margins.left + col1Width + 20, doc.y + 5, col2Width, 20)
-      .fill(riskLevelColor);
-
-    doc
-      .font("Helvetica-Bold")
-      .fontSize(12)
-      .fillColor("black")
-      .text(
-        report.verdict || "No verdict",
-        doc.page.margins.left + col1Width + 25,
-        doc.y + 10,
-        {
-          width: col2Width - 10,
-          align: "center",
-        }
-      );
-
-    doc
-      .font("Helvetica")
-      .fontSize(10)
-      .text(
-        `Risk Score: ${(report.risk_score * 100 || 0).toFixed(2)}%`,
-        doc.page.margins.left + col1Width + 20,
-        doc.y + 15
-      )
-      .text(
-        `Safe Confidence: ${(confidence.safe * 100 || 0).toFixed(2)}%`,
-        doc.page.margins.left + col1Width + 20,
-        doc.y + 5
-      )
-      .text(
-        `Fake Confidence: ${(confidence.fake * 100 || 0).toFixed(2)}%`,
-        doc.page.margins.left + col1Width + 20,
-        doc.y + 5
-      )
-      .text(
-        `Report Date: ${formatDate(report.createdAt)}`,
-        doc.page.margins.left + col1Width + 20,
-        doc.y + 5
-      );
-
-    // Add page break
-    doc.addPage();
-
-    // APK Information
-    doc
-      .font("Helvetica-Bold")
-      .fontSize(14)
-      .fillColor("#444")
-      .text("📦 APK Information", doc.page.margins.left, doc.y)
-      .moveDown(0.5);
-
-    // Draw a line under the section title
-    doc
-      .moveTo(doc.page.margins.left, doc.y)
-      .lineTo(doc.page.width - doc.page.margins.right, doc.y)
-      .lineWidth(1)
-      .strokeColor("#ddd")
-      .stroke();
-
-    doc.moveDown(0.5);
-
-    // APK table
-    const apkTable = {
-      headers: ["APK Name", "Package Name", "Version", "Size", "SHA256"],
-      rows: [
-        [
-          apkMeta.apk_name || "N/A",
-          apkMeta.package_name || "N/A",
-          `${apkMeta.version_name || "N/A"} (${apkMeta.version_code || "N/A"})`,
-          formatFileSize(apkMeta.size_bytes),
-          apkMeta.sha256 || "N/A",
-        ],
-      ],
-    };
-
-    // Draw APK table
-    drawTable(doc, apkTable);
-
-    // Certificate Information
-    doc
-      .font("Helvetica-Bold")
-      .fontSize(14)
-      .fillColor("#444")
-      .text("Certificate Information", doc.page.margins.left, doc.y + 15)
-      .moveDown(0.5);
-
-    // Draw a line under the section title
-    doc
-      .moveTo(doc.page.margins.left, doc.y)
-      .lineTo(doc.page.width - doc.page.margins.right, doc.y)
-      .lineWidth(1)
-      .strokeColor("#ddd")
-      .stroke();
-
-    doc.moveDown(0.5);
-
-    // Certificate table
-    const certTable = {
-      headers: [
-        "Subject",
-        "Issuer",
-        "Serial Number",
-        "Valid From",
-        "Valid To",
-        "Algorithm",
-      ],
-      rows: [
-        [
-          cert.subject || "N/A",
-          cert.issuer || "N/A",
-          cert.serial_number || "N/A",
-          formatDate(cert.not_before),
-          formatDate(cert.not_after),
-          cert.signature_algorithm || "N/A",
-        ],
-      ],
-    };
-
-    // Draw certificate table
-    drawTable(doc, certTable);
-
-    // Add page break
-    doc.addPage();
-
-    // Permissions Analysis
-    doc
-      .font("Helvetica-Bold")
-      .fontSize(14)
-      .fillColor("#444")
-      .text("Permissions Analysis", doc.page.margins.left, doc.y)
-      .moveDown(0.5);
-
-    // Draw a line under the section title
-    doc
-      .moveTo(doc.page.margins.left, doc.y)
-      .lineTo(doc.page.width - doc.page.margins.right, doc.y)
-      .lineWidth(1)
-      .strokeColor("#ddd")
-      .stroke();
-
-    doc.moveDown(0.5);
-
-    doc
-      .font("Helvetica")
-      .fontSize(10)
-      .text(`Total Permissions: ${report.permissions?.all?.length || 0}`)
-      .text(
-        `Dangerous Permissions: ${report.permissions?.dangerous?.length || 0}`
-      )
-      .moveDown(0.5);
-
-    // Dangerous Permissions
-    doc
-      .font("Helvetica-Bold")
-      .fontSize(12)
-      .fillColor("#555")
-      .text("Dangerous Permissions")
-      .moveDown(0.3);
-
-    if (report.permissions?.dangerous?.length > 0) {
-      const dangerousPermsTable = {
-        headers: ["Permission"],
-        rows: report.permissions.dangerous.map((p) => [p]),
-      };
-      drawTable(doc, dangerousPermsTable, "#f8d7da");
-    } else {
-      doc
-        .font("Helvetica")
-        .fontSize(10)
-        .text("No dangerous permissions found")
-        .moveDown(0.5);
-    }
-
-    // Suspicious Permissions
-    doc
-      .font("Helvetica-Bold")
-      .fontSize(12)
-      .fillColor("#555")
-      .text("Suspicious Permissions")
-      .moveDown(0.3);
-
-    if (ps.suspiciousPermissions?.length > 0) {
-      const suspiciousPermsTable = {
-        headers: ["Permission", "Type"],
-        rows: ps.suspiciousPermissions.map((p) => [p.permission, p.type]),
-      };
-      drawTable(doc, suspiciousPermsTable, "#f8d7da");
-    } else {
-      doc
-        .font("Helvetica")
-        .fontSize(10)
-        .text("No suspicious permissions found")
-        .moveDown(0.5);
-    }
-
-    // Add page break
-    doc.addPage();
-
-    // Data Safety
-    doc
-      .font("Helvetica-Bold")
-      .fontSize(14)
-      .fillColor("#444")
-      .text("Data Safety", doc.page.margins.left, doc.y)
-      .moveDown(0.5);
-
-    // Draw a line under the section title
-    doc
-      .moveTo(doc.page.margins.left, doc.y)
-      .lineTo(doc.page.width - doc.page.margins.right, doc.y)
-      .lineWidth(1)
-      .strokeColor("#ddd")
-      .stroke();
-
-    doc.moveDown(0.5);
-
-    // Security Practices
-    doc
-      .font("Helvetica-Bold")
-      .fontSize(12)
-      .fillColor("#555")
-      .text("Security Practices")
-      .moveDown(0.3);
-
-    if (ds.securityPractices?.length > 0) {
-      const securityPracticesTable = {
-        headers: ["Practice", "Description"],
-        rows: ds.securityPractices.map((p) => [p.practice, p.description]),
-      };
-      drawTable(doc, securityPracticesTable);
-    } else {
-      doc
-        .font("Helvetica")
-        .fontSize(10)
-        .text("No security practices information")
-        .moveDown(0.5);
-    }
-
-    // Collected Data
-    doc
-      .font("Helvetica-Bold")
-      .fontSize(12)
-      .fillColor("#555")
-      .text("Collected Data")
-      .moveDown(0.3);
-
-    if (ds.collectedData?.length > 0) {
-      const collectedDataTable = {
-        headers: ["Data Type", "Purpose", "Optional"],
-        rows: ds.collectedData.map((d) => [
-          `${d.data} (${d.type})`,
-          d.purpose,
-          d.optional ? "Yes" : "No",
-        ]),
-      };
-      drawTable(doc, collectedDataTable);
-    } else {
-      doc
-        .font("Helvetica")
-        .fontSize(10)
-        .text("No data collection information")
-        .moveDown(0.5);
-    }
-
-    // Shared Data
-    doc
-      .font("Helvetica-Bold")
-      .fontSize(12)
-      .fillColor("#555")
-      .text("Shared Data")
-      .moveDown(0.3);
-
-    if (ds.sharedData?.length > 0) {
-      const sharedDataTable = {
-        headers: ["Data Type", "Purpose", "Optional"],
-        rows: ds.sharedData.map((d) => [
-          `${d.data} (${d.type})`,
-          d.purpose,
-          d.optional ? "Yes" : "No",
-        ]),
-      };
-      drawTable(doc, sharedDataTable);
-    } else {
-      doc
-        .font("Helvetica")
-        .fontSize(10)
-        .text("No data sharing information")
-        .moveDown(0.5);
-    }
-
-    // Add page break
-    doc.addPage();
-
-    // Reviews Analysis
-    doc
-      .font("Helvetica-Bold")
-      .fontSize(14)
-      .fillColor("#444")
-      .text("⭐ Reviews Analysis", doc.page.margins.left, doc.y)
-      .moveDown(0.5);
-
-    // Draw a line under the section title
-    doc
-      .moveTo(doc.page.margins.left, doc.y)
-      .lineTo(doc.page.width - doc.page.margins.right, doc.y)
-      .lineWidth(1)
-      .strokeColor("#ddd")
-      .stroke();
-
-    doc.moveDown(0.5);
-
-    doc
-      .font("Helvetica")
-      .fontSize(10)
-      .text(`Total Reviews: ${ps.totalReviews || 0}`)
-      .text(`Average Rating: ${ps.score || "N/A"}`)
-      .text(`Reviews with >3 Stars: ${ps.reviewMoreThan3 || 0}`)
-      .text(`Suspicious Reviews: ${ps.suspiciousReviews?.length || 0}`)
-      .moveDown(0.5);
-
-    // Suspicious Reviews
-    doc
-      .font("Helvetica-Bold")
-      .fontSize(12)
-      .fillColor("#555")
-      .text("Suspicious Reviews")
-      .moveDown(0.3);
-
-    if (ps.suspiciousReviews?.length > 0) {
-      const suspiciousReviewsTable = {
-        headers: ["User", "Rating", "Date", "Review"],
-        rows: ps.suspiciousReviews.map((r) => [
-          r.userName,
-          `${r.score} ⭐`,
-          formatDate(r.date),
-          r.text,
-        ]),
-      };
-      drawTable(doc, suspiciousReviewsTable, "#f8d7da");
-    } else {
-      doc
-        .font("Helvetica")
-        .fontSize(10)
-        .text("No suspicious reviews found")
-        .moveDown(0.5);
-    }
-
-    // Add page break
-    doc.addPage();
-
-    // Sandbox Analysis
-    doc
-      .font("Helvetica-Bold")
-      .fontSize(14)
-      .fillColor("#444")
-      .text("🔍 Sandbox Analysis", doc.page.margins.left, doc.y)
-      .moveDown(0.5);
-
-    // Draw a line under the section title
-    doc
-      .moveTo(doc.page.margins.left, doc.y)
-      .lineTo(doc.page.width - doc.page.margins.right, doc.y)
-      .lineWidth(1)
-      .strokeColor("#ddd")
-      .stroke();
-
-    doc.moveDown(0.5);
-
-    if (report.sandboxResult) {
-      const sandboxTable = {
-        headers: ["Result Type", "Count"],
-        rows: Object.entries(report.sandboxResult).map(([key, value]) => [
-          key,
-          value,
-        ]),
-      };
-      drawTable(doc, sandboxTable);
-    } else {
-      doc
-        .font("Helvetica")
-        .fontSize(10)
-        .text("No sandbox results available")
-        .moveDown(0.5);
-    }
-
-    // Footer
-    doc.addPage();
-    doc
-      .font("Helvetica")
-      .fontSize(11)
-      .fillColor("gray")
-      .text(`Generated on: ${new Date().toLocaleString()}`, { align: "center" })
-      .text("This report was automatically generated by App Security Scanner", {
-        align: "center",
-      });
-
-    // Draw a line above the footer
-    doc
-      .moveTo(doc.page.margins.left, doc.y - 25)
-      .lineTo(doc.page.width - doc.page.margins.right, doc.y - 25)
-      .lineWidth(1)
-      .strokeColor("#ddd")
-      .stroke();
-
-    // Finalize the PDF
-    doc.end();
+    // Send the PDF
+    res.send(pdfBuffer);
   } catch (err) {
+    // console.error("PDF Generation Error:", err.message);
     res
       .status(500)
       .json({ error: "Failed to generate PDF", details: err.message });
   }
-}
-
-// Helper function to draw tables
-function drawTable(doc, table, rowColor = null) {
-  const tableTop = doc.y;
-  const colWidths = [];
-  const rowHeight = 15;
-
-  // Calculate column widths based on content
-  table.headers.forEach((header, i) => {
-    const headerWidth = doc.widthOfString(header) + 10;
-    let maxWidth = headerWidth;
-
-    table.rows.forEach((row) => {
-      const cellWidth = doc.widthOfString(String(row[i] || "")) + 10;
-      if (cellWidth > maxWidth) maxWidth = cellWidth;
-    });
-
-    colWidths.push(
-      Math.min(
-        maxWidth,
-        (doc.page.width - doc.page.margins.left - doc.page.margins.right) /
-          table.headers.length
-      )
-    );
-  });
-
-  // Draw headers
-  let x = doc.page.margins.left;
-  table.headers.forEach((header, i) => {
-    doc
-      .font("Helvetica-Bold")
-      .fontSize(10)
-      .rect(x, tableTop, colWidths[i], rowHeight)
-      .fill("#f4f4f4")
-      .fillColor("black")
-      .text(header, x + 5, tableTop + 3, {
-        width: colWidths[i] - 10,
-        align: "left",
-      });
-    x += colWidths[i];
-  });
-
-  // Draw rows
-  table.rows.forEach((row, rowIndex) => {
-    x = doc.page.margins.left;
-    const y = tableTop + (rowIndex + 1) * rowHeight;
-
-    row.forEach((cell, cellIndex) => {
-      if (rowIndex === 0 && rowColor) {
-        doc.rect(x, y, colWidths[cellIndex], rowHeight).fill(rowColor);
-      }
-
-      doc
-        .font("Helvetica")
-        .fontSize(10)
-        .fillColor("black")
-        .text(String(cell || ""), x + 5, y + 3, {
-          width: colWidths[cellIndex] - 10,
-          align: "left",
-        });
-
-      // Draw cell border
-      doc.rect(x, y, colWidths[cellIndex], rowHeight).stroke();
-
-      x += colWidths[cellIndex];
-    });
-  });
-
-  // Update Y position
-  doc.y = tableTop + (table.rows.length + 1) * rowHeight + 10;
 }

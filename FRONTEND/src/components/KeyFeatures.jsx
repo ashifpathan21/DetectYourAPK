@@ -94,7 +94,7 @@ const KeyFeatures = () => {
                     {data.heading}
                   </h2>
                 </div>
-                <h2 className="p-2 text-2xl text-cyan-600 font-semibold  font-serif ">
+                <h2 className="p-2 text-2xl text-cyan-300 font-semibold  font-serif ">
                   {data.para}
                 </h2>
               </div>

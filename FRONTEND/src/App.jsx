@@ -8,7 +8,7 @@ import Reports from "./pages/Reports.jsx";
 
 const App = () => {
   return (
-    <div className=" overflow-x-hidden bg-gray-800 text-white">
+    <div className=" overflow-x-hidden gradient-bg text-white">
 
       <div className='content'>
         <BrowserRouter>

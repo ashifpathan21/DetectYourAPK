@@ -86,7 +86,7 @@ const ApkInput = () => {
       glareColor="lightblue"
       glarePosition="all"
       glareBorderRadius="20px"
-      className="p-1 flex shadow-md shadow-cyan-300  border-gr rounded-lg  flex-col gap-2"
+      className="p-1 flex shadow-md shadow-cyan-300  border-gr rounded-xl  flex-col gap-2"
     >
       <div
         className={` perspective-distant -translate-z-10 shadow-md w-11/12 mx-auto mt-10 min-h-50 flex flex-col justify-center items-center border-dashed rounded-lg p-6 text-center transition `}

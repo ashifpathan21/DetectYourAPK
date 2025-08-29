@@ -3,7 +3,7 @@ import ApkInput from "./ApkInput.jsx";
 import UrlInput from "./UrlInput.jsx";
 const Heading = () => {
   return (
-    <div className="w-full flex flex-col gap-4 p-6 px-8  ">
+    <div className="w-full flex mt-30 flex-col gap-4 p-6 px-8  ">
       <div className="px-6 p-4">
         <h2 className="text-4xl font-semibold  font-serif ">
           Detect fake banking APKs before they detect you

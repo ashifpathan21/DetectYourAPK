@@ -67,7 +67,7 @@ export async function analyzeApp(packageId, clientId) {
 
       // Data Safety
       datasafety,
-
+ 
       // Reviews
       reviewsSearched: reviews.data.length,
       reviewMoreThan3: reviewMoreThan3.length,
@@ -77,7 +77,7 @@ export async function analyzeApp(packageId, clientId) {
         score: r.score,
         date: r.date,
       })),
-
+ 
       // Permissions
       totalPermissions: permissions.length,
       permissions,

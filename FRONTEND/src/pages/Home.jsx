@@ -39,7 +39,7 @@ const Home = () => {
     footerRef.current?.scrollIntoView({ behavior: "smooth" });
 
   return (
-    <div className="min-h-screen h-full w-screen overflow-x-hidden">
+    <div className="">
       {/* pass scroll funcs to Navbar */}
       <Navbar
         onKeyFeatureClick={scrollToKeyFeature}

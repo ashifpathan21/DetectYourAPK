@@ -1,66 +1,57 @@
 @import "tailwindcss";
+/* Background effect styles */
+.gradient-bg {
 
-.dark {
-  background-color: rgb(0, 0, 0);
-  color: white;
+  background: linear-gradient(135deg, #1d2631, #22a3c6, #203142, #09233d);
 }
 
-.light {
-  background-color: #ffffff;
+
+
+
+/* Subtle moving glow for the pill menu */
+.moving-shadow {
+  position: relative;
+  border-radius: 9999px;
+  backdrop-filter: blur(12px); /* <-- valid */
+  -webkit-backdrop-filter: blur(12px);
+  isolation: isolate; /* keeps pseudo under control */
 }
 
-.startup {
-  background-image: url(../src/assets/startup-bg.gif);
+.moving-shadow::after {
+  content: "";
+  position: absolute; inset: -2px; /* tiny spread */
+  border-radius: inherit;
   z-index: -1;
-  background-size: cover;
+  box-shadow:
+    0 0 24px rgba(0, 150, 255, 0.35),
+    0 0 48px rgba(0, 180, 255, 0.25),
+    0 0 72px rgba(0, 200, 255, 0.20);
+  animation: moveShadow 6s infinite linear;
 }
 
-.log {
-  background-image: url(../src/assets/lgo.png);
-  background-size: contain;
-  background-position: center center;
-}
-
-.changing-text {
-  background: -webkit-linear-gradient(#4494fc, #e29191);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.bgpic {
-  -webkit-box-shadow: 0px 0px 17px 0px rgba(0, 0, 0, 0.41);
-  -moz-box-shadow: 0px 0px 17px 0px rgba(0, 0, 0, 0.41);
-  box-shadow: 0px 0px 17px 0px rgba(0, 0, 0, 0.41);
-  animation: move 1s linear 0.5s infinite alternate;
-}
-
-@keyframes move {
-  from {
-    transform: translateY(4px);
+@keyframes moveShadow {
+  0%, 50%, 100% {
+    box-shadow:
+      0 0 24px rgba(0, 150, 255, 0.35),
+      0 0 48px rgba(0, 180, 255, 0.25),
+      0 0 72px rgba(0, 200, 255, 0.20);
+    transform: translate3d(0,0,0);
   }
-  to: {
-    transform: translateY(-4px);
+  25% {
+    box-shadow:
+      -8px -8px 28px rgba(100, 200, 255, 0.35),
+      -16px -16px 56px rgba(120, 220, 255, 0.25),
+      -24px -24px 84px rgba(140, 240, 255, 0.20);
+    transform: translate3d(-2px,-2px,0);
   }
-}
-
-@keyframes pointBounce {
-  0% {
-    opacity: 0;
-    transform: scale(0.5) translateY(20px);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.2) translateY(-10px);
-  }
-  100% {
-    opacity: 0;
-    transform: scale(1) translateY(-40px);
+  75% {
+    box-shadow:
+      8px 8px 28px rgba(100, 200, 255, 0.35),
+      16px 16px 56px rgba(120, 220, 255, 0.25),
+      24px 24px 84px rgba(140, 240, 255, 0.20);
+    transform: translate3d(2px,2px,0);
   }
 }
-.point-popup {
-  animation: pointBounce 1.5s ease-out;
-}
-
 
 
 
