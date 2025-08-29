@@ -16,7 +16,7 @@ const Feedbacks = () => {
   if (!feedbacks || feedbacks.length === 0) return null;
 
   return (
-    <div className="w-full bg-gray-900 py-12 overflow-hidden">
+    <div className="w-full  py-12 overflow-hidden">
         <h1 className='text-3xl font-semibold p-2 mb-4 text-center'>Our Feedbacks </h1>
       <motion.div
         className="flex space-x-6 "
@@ -34,7 +34,7 @@ const Feedbacks = () => {
         {[...feedbacks, ...feedbacks].map((f, idx) => (
           <motion.div
             key={idx + "_" + f._id}
-            className="min-w-[250px] max-w-xs bg-gray-800 p-6 rounded-2xl shadow-md hover:shadow-lg transition-all duration-150 shadow-cyan-400/50 text-white flex flex-col h-fit"
+            className="min-w-[250px] max-w-xs backdrop-blur-3xl p-6 rounded-2xl shadow-md hover:shadow-lg transition-all duration-150 shadow-cyan-400/50 text-white flex flex-col h-fit"
           >
             <p className="text-xl mb-2 font-semibold">
               {"⭐".repeat(f.rating)}{" "}
